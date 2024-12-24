@@ -1,0 +1,100 @@
+﻿@page "/profile/{Id}"
+@rendermode InteractiveServer
+@using BlazorApp.Components.Layout
+@using ServiFinder.Domain
+@using ServiFinder.Services
+@inject IEmployedServices EmployedService
+
+<div class="profile-card">
+    @if (Employed != null)
+    {
+        <div class="profile-left">
+            <div class="text-center">
+                <CircleAvatar Image="@Employed.ImageProfile" Width="200" Heigth="200"></CircleAvatar>
+            </div>
+            <div class="work-section">
+                <div class="text-center">
+                    <h3>@Employed.Speciality</h3>
+                </div>
+                <div class="work-item">
+                    <h4>Descripción</h4>
+                    <p>@Employed.Description</p>
+                </div>
+            </div>
+            <div class="skills-section">
+                <h3>Habilidades</h3>
+                @foreach (var skill in Employed.Skills)
+                {
+                    <p>@skill</p>
+                }
+            </div>
+        </div>
+        <div class="profile-right">
+            <h2>@Employed.Name</h2>
+            <h4>@Employed.Speciality</h4>
+            <div class="recommendation">
+                <p>Calificación <strong>@Employed.Stars</strong> <span class="stars">★★★★★</span></p>
+            </div>
+            <div class="action-buttons">
+                <button class="btn message" @onclick="OpenModal">Solicitar servicio</button>
+                <div class="whatsapp-button">
+                    <a href="@webWhatsappUrl" target="_blank">
+                        <i class="fab fa-whatsapp"></i>Contactar
+                    </a>
+                </div>
+                <button class="btn report">Reportar usuario</button>
+            </div>
+            <div class="contact-info">
+                <h3>Información de contacto</h3>
+                <p><strong>Télefono:</strong> @Employed.Phone</p>
+                <p><strong>Driección:</strong> @Employed.Address</p>
+                <p><strong>E-mail:</strong> @Employed.Email</p>
+            </div>
+            <div class="personal-info">
+                <h3>Información personal</h3>
+                <p><strong>Edad:</strong> @Employed.Age</p>
+                <p><strong>Genero:</strong> @Employed.Gender</p>
+            </div>
+        </div>
+    }
+    else 
+    {
+        <div class="d-flex justify-content-center">
+            <div class="not-found-container">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/024/815/668/small_2x/oops-404-error-with-a-broken-robot-animation-flash-message-color-failed-loading-animation-for-broken-link-web-design-animation-ultra-hd-4k-free-video.jpg" alt="404 Not Found" class="not-found-image" />
+                <h1>Colaborador no encontrado</h1>
+                <p>The page you are looking for does not exist.</p>
+            </div>
+        </div>
+
+    }
+</div>
+<MyModal Show="@showModal" ShowChanged="(x)=>showModal = x" modalTitle="Solicitar servicio"/>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private Employed Employed;
+    private string webWhatsappUrl;
+    private bool showModal = false;
+
+    protected override void OnInitialized()
+    {
+        Employed=EmployedService.GetById(Convert.ToInt32(Id));
+        if (Employed != null)
+            webWhatsappUrl = $"https://wa.me/{numberPhoneFormatter(Employed.Phone)}";
+
+    }
+
+    private string numberPhoneFormatter(string phone) 
+    {
+        return phone.Substring(3, 11).Trim();
+    }
+
+    private void OpenModal()
+    {
+        showModal = true;
+    }
+
+}

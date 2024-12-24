@@ -1,0 +1,115 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using BlazorApp.Components.Layout
+@using ServiFinder.Domain
+@using ServiFinder.Services
+@inject NavigationManager Navigation
+@inject IEmployedServices EmployedService
+
+<PageTitle>Home</PageTitle>
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="mx-auto">
+            <form>
+                <div class="input">
+                    <label for="search">
+                        <input required="" autocomplete="off" placeholder="Servicio" id="search" type="text" @bind-value="Services">
+                        <div class="icon">
+                            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
+                            </svg>
+                            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-off">
+                                <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linejoin="round" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                        <button type="reset" class="close-btn">
+                            <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                                <path clip-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </label>
+                </div>
+                <div class="input">
+                    <label for="search">
+                        <input required="" autocomplete="off" placeholder="Ubicación" id="search" type="text" @bind-value="Location">
+                        <div class="icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <button type="reset" class="close-btn">
+                            <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                                <path clip-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </label>
+                </div>
+            </form>
+            <div class="select-container">
+                <select required @bind="category" class="styled-select">
+                    <option value="" selected>Area</option>
+                    <option value="Construction">Construcción</option>
+                    <option value="Education">Educación</option>
+                    <option value="Psychology">Psicología</option>
+                    <option value="Cleaning">Limpieza</option>
+                    <option value="Technology">Tecnología</option>
+                    <option value="Health">Salud</option>
+                    <option value="Pets">Macotas</option>
+                </select>
+                <select required @bind="qualificationOrder" class="styled-select">
+                    <option selected disabled>Calificación</option>
+                    <option value="D">Mayor calificación a menor calificación</option>
+                    <option value="A">Menor calificación a mayor calificación</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <button @onclick="searchServices" class="button-search">Buscar</button>
+            </div>
+
+        </div>
+
+    </div>
+    <h1>@msj</h1>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="mx-auto">
+        @foreach (var employed in employedList)
+        {
+            <ServiceCard OnClick="showProfile" Employed="employed"></ServiceCard>
+        }
+    </div>
+</div>
+@*<MyModal Show="@showModal" ShowChanged="(x)=>showModal = x" />*@
+@code{
+    private String Services = "";
+    private String Location = "";
+    private Categories category;
+    private String qualificationOrder = "";
+    private String msj = "";
+    private List<Employed> employedList;
+    private bool showModal = false;
+
+    protected override void OnInitialized()
+    {
+        employedList = EmployedService.GetAll().ToList();
+    }
+
+    private void searchServices() {
+
+        if (!String.IsNullOrEmpty(Services) || !String.IsNullOrEmpty(Location) || category != null || !String.IsNullOrEmpty(qualificationOrder))
+        {
+
+            employedList = EmployedService.GetAllWithFilters(Services, Location, category, qualificationOrder).ToList();
+        }
+
+    }
+
+    private void showProfile(string index) 
+    {
+        Navigation.NavigateTo($"/profile/{index}");
+    }
+
+    private void OpenModal() 
+    {
+        showModal = true;
+    }
+
+}

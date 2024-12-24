@@ -1,0 +1,32 @@
+﻿@using ServiFinder.Domain
+<div class="service-card">
+    <div class="card-content" @onclick="HandleClick">
+        <div class="card-icon">
+            <CircleAvatar Image="@Employed.ImageProfile" Width="60" Heigth="60"></CircleAvatar>
+        </div>
+        <div class="card-details">
+            <h3 class="card-title">@Employed.Speciality</h3>
+            <p class="card-description">@Employed.Name</p>
+            <p class="card-description">Calificacion: <strong>@Employed.Stars<i class="fa-solid fa-star"></i></strong></p>
+        </div>
+    </div>
+    <div class="card-date">
+        <input class="btn-dark" type="button" value="Solicitar" />
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+    [Parameter]
+    public Employed Employed { get; set; }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate) 
+        {
+            await OnClick.InvokeAsync(Employed.Id.ToString());
+        }
+    }
+}
