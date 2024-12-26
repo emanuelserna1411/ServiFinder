@@ -11,9 +11,10 @@
         </div>
     </div>
     <div class="card-date">
-        <input class="btn-dark" type="button" value="Solicitar" />
+        <input class="btn-dark" type="button" value="Solicitar" @onclick="RequestService" />
     </div>
 </div>
+<MyModal Show="@showModal" ShowChanged="(x)=>showModal = x" modalTitle="Solicitar servicio" />
 
 @code {
 
@@ -21,6 +22,7 @@
     public EventCallback<string> OnClick { get; set; }
     [Parameter]
     public Employed Employed { get; set; }
+    private bool showModal = false;
 
     private async Task HandleClick()
     {
@@ -28,5 +30,10 @@
         {
             await OnClick.InvokeAsync(Employed.Id.ToString());
         }
+    }
+
+    private void RequestService() 
+    {
+        showModal = true;
     }
 }
