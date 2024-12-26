@@ -1,21 +1,34 @@
 ﻿@rendermode InteractiveServer
-<div class="modal" style="@(Show ? "display:block" : "display:none")">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="modal-header">ServiFinder</div>
-        <div class="modal-body">
-            <div class="price">Hora: $30,800</div>
-            <div class="small-text">+ $1,200 incluido</div>
-            <div class="trip-details">
-                <div><span>A 1 min</span> (0.2 km)</div>
-                <div>Cra. 70, Guayabal</div>
-                <div>Cl 10A #4A-09, Poblado</div>
+@if (!ShowConfirmationModal) 
+{
+    <div class="modal" style="@(Show ? "display:block" : "display:none")">
+        <div class="modal-content">
+            <span class="close" @onclick="Close">&times;</span>
+            <div class="modal-header">ServiFinder</div>
+            <div class="modal-body">
+                <div class="price">Hora: $30,800</div>
+                <div class="small-text">+ $1,200 incluido</div>
+                <div class="trip-details">
+                    <div><span>A 1 min</span> (0.2 km)</div>
+                    <div>Cra. 70, Guayabal</div>
+                    <div>Cl 10A #4A-09, Poblado</div>
+                </div>
             </div>
+            <button class="btn btn-primary" @onclick="AcceptService">Acepta el contrato de renta</button>
+            <button @onclick="Close" class="btn btn-dark">Cancelar</button>
         </div>
-        <button class="btn btn-primary">Acepta el contrato de renta</button>
-        <button @onclick="Close" class="btn btn-dark">Cancelar</button>
     </div>
-</div>
+}
+@if (isLoading)
+{
+    <div class="modal" style="display:block;">
+        <div class="modal-content" style="text-align: center;">
+            <div class="loader"></div>
+            <p>Procesando...</p>
+        </div>
+    </div>
+}
+<ConfirmationModal IsVisible="ShowConfirmationModal" OnClose="Close"></ConfirmationModal>
 
 @code {
     [Parameter]
@@ -26,9 +39,25 @@
 
     [Parameter]
     public string modalTitle { get; set; }
+
+    private bool ShowConfirmationModal = false;
+    private bool isLoading = false;
+
     public void Close() 
     {
         Show = false;
+        ShowConfirmationModal = false;
         ShowChanged.InvokeAsync(Show);
     }
+
+    public async Task AcceptService() 
+    {
+        isLoading = true;
+
+        await Task.Delay(2000);
+
+        isLoading = false;
+        ShowConfirmationModal = true;
+    }
+
 }
