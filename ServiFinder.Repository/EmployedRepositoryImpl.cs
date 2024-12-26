@@ -23,7 +23,7 @@ namespace ServiFinder.Repository
 
         public IEnumerable<Employed> GetAllWithFilters(string services, string location, Categories category, string qualificationOrder)
         {
-            var data = _Context.Employeds.Where(x => (x.Speciality==services)||(x.Address==location)||(x.Category==category));
+            var data = _Context.Employeds.Where(x => (x.Speciality.ToLower().Contains(services.ToLower()))).Where(x => (x.Address == location) || (x.Category == category || category == Categories.None));
 
             if (qualificationOrder == "A")
             {

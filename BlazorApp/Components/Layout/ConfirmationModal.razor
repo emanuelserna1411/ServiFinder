@@ -1,6 +1,7 @@
 ﻿@code {
     [Parameter] public bool IsVisible { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string Content { get; set; }
 
     private async Task Close()
     {
@@ -16,7 +17,7 @@
             <div style="text-align: center;">
                 <i class="fas fa-check-circle" style="color: green; font-size: 48px;"></i>
                 <h2>Confirmación</h2>
-                <p>El servicio ha sido aceptado.</p>
+                <p>@Content</p>
             </div>
         </div>
     </div>

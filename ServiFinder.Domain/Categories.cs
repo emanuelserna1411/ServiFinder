@@ -11,6 +11,7 @@ namespace ServiFinder.Domain
     /// </summary>
     public enum Categories
     {
+        None,
         Beauty,
         Construction,
         Education,

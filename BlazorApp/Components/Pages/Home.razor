@@ -44,8 +44,9 @@
                 </div>
             </form>
             <div class="select-container">
-                <select required @bind="category" class="styled-select">
-                    <option value="" selected>Area</option>
+                 <select required @bind="category" class="styled-select">
+                    <option value="None" disabled>Categoria</option>
+                    <option value="Beauty">Belleza</option>
                     <option value="Construction">Construcción</option>
                     <option value="Education">Educación</option>
                     <option value="Psychology">Psicología</option>
@@ -53,9 +54,9 @@
                     <option value="Technology">Tecnología</option>
                     <option value="Health">Salud</option>
                     <option value="Pets">Macotas</option>
-                </select>
+                </select> 
                 <select required @bind="qualificationOrder" class="styled-select">
-                    <option selected disabled>Calificación</option>
+                    <option value="" disabled>Calificación</option>
                     <option value="D">Mayor calificación a menor calificación</option>
                     <option value="A">Menor calificación a mayor calificación</option>
                 </select>
@@ -94,7 +95,7 @@
 
     private void searchServices() {
 
-        if (!String.IsNullOrEmpty(Services) || !String.IsNullOrEmpty(Location) || category != null || !String.IsNullOrEmpty(qualificationOrder))
+        if (!String.IsNullOrEmpty(Services) || !String.IsNullOrEmpty(Location) || !String.IsNullOrEmpty(qualificationOrder) || category!=null)
         {
 
             employedList = EmployedService.GetAllWithFilters(Services, Location, category, qualificationOrder).ToList();

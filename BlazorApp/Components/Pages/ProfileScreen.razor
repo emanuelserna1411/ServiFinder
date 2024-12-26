@@ -42,7 +42,7 @@
                         <i class="fab fa-whatsapp"></i>Contactar
                     </a>
                 </div>
-                <button class="btn report">Reportar usuario</button>
+                <button class="btn report" @onclick="OpenReportModal">Reportar usuario</button>
             </div>
             <div class="contact-info">
                 <h3>Información de contacto</h3>
@@ -70,6 +70,7 @@
     }
 </div>
 <MyModal Show="@showModal" ShowChanged="(x)=>showModal = x" modalTitle="Solicitar servicio"/>
+<ReportUserModal Show="@showReportModal" showReportModal="(x)=> showReportModal=x"></ReportUserModal>
 
 @code {
     [Parameter]
@@ -78,6 +79,7 @@
     private Employed Employed;
     private string webWhatsappUrl;
     private bool showModal = false;
+    private bool showReportModal = false;
 
     protected override void OnInitialized()
     {
@@ -95,6 +97,11 @@
     private void OpenModal()
     {
         showModal = true;
+    }
+
+    private void OpenReportModal()
+    {
+        showReportModal = true;
     }
 
 }

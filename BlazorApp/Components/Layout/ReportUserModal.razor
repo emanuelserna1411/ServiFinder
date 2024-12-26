@@ -1,0 +1,61 @@
+﻿@using ServiFinder.Domain;
+@rendermode InteractiveServer
+@if (!ShowConfirmationModal)
+{
+    <div class="modal" style="@(Show ? "display:block" : "display:none")">
+        <div class="modal-content">
+            <span class="close" @onclick="Close">&times;</span>
+            <div class="modal-header">ServiFinder</div>
+            <div class="modal-body">
+                <EditForm Model="report">
+                    <InputText @bind-Value="report.Reason"></InputText>
+                    <InputSelect @bind-Value="report.Reason" />
+                    <InputTextArea @bind-Value="report.Description"/>
+                </EditForm>
+            </div>
+            <button type="button" class="btn btn-secondary" @onclick="Close">Cerrar</button>
+            <button type="submit" class="btn btn-primary" @onclick="sendReport">Enviar Reporte</button>
+        </div>
+    </div>
+}
+@if (isLoading)
+{
+    <div class="modal" style="display:block;">
+        <div class="modal-content" style="text-align: center;">
+            <div class="loader"></div>
+            <p>Procesando...</p>
+        </div>
+    </div>
+}
+<ConfirmationModal IsVisible="ShowConfirmationModal" OnClose="Close" Content="Se ha enviado el reporte!"></ConfirmationModal>
+
+@code{
+    [Parameter]
+    public bool Show { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> showReportModal  { get; set; }
+
+    private bool ShowConfirmationModal = false;
+    private bool isLoading = false;
+
+    private UserReport report = new UserReport();
+
+    public void Close() 
+    {
+        Show = false;
+        ShowConfirmationModal = false;
+        showReportModal.InvokeAsync(Show);
+    }
+
+    public async Task sendReport() 
+    {
+        isLoading = true;
+        await Task.Delay(2000);
+        isLoading = false;
+        ShowConfirmationModal = true;
+    }
+
+
+
+}
